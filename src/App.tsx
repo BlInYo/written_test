@@ -41,34 +41,41 @@ const App = () => {
   }
 
   const handleCreateAccount = async () => {
-    await form.validateFields()
-    const formData = form.getFieldsValue()
-    const _accountInfo: AccountInfo = {
-      id: `${new Date().getTime()}`,
-      create_time: new Date().getTime(),
-      status: AccountStatus.Active,
-      ...formData,
-    }
-    if (modalMode === 'add') {
-      setAccountData((prev) => {
-        const newArr = prev.map((item) => ({ ...item }))
-        newArr.unshift(_accountInfo)
-        return newArr
-      })
-    } else {
-      setAccountData((prev) => {
-        const newArr = prev.map((item) => ({ ...item }))
-        const index = newArr.findIndex((item) => item.id === accountInfo?.id)
-        newArr.splice(index, 1, {
-          ...accountInfo,
+    form
+      .validateFields()
+      .then(() => {
+        const formData = form.getFieldsValue()
+        const _accountInfo: AccountInfo = {
+          id: `${new Date().getTime()}`,
+          create_time: new Date().getTime(),
+          update_time: new Date().getTime(),
+          status: AccountStatus.Active,
           ...formData,
-        })
-        return newArr
+        }
+        if (modalMode === 'add') {
+          setAccountData((prev) => {
+            const newArr = prev.map((item) => ({ ...item }))
+            newArr.unshift(_accountInfo)
+            return newArr
+          })
+        } else {
+          setAccountData((prev) => {
+            const newArr = prev.map((item) => ({ ...item }))
+            const index = newArr.findIndex((item) => item.id === accountInfo?.id)
+            newArr.splice(index, 1, {
+              ...accountInfo,
+              ...formData,
+              update_time: new Date().getTime(),
+            })
+            return newArr
+          })
+          setAccountInfo(undefined)
+        }
+        setModalVisible(false)
       })
-      setAccountInfo(undefined)
-    }
-
-    setModalVisible(false)
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   /** 新增 */
@@ -90,6 +97,13 @@ const App = () => {
       title: '注册时间',
       dataIndex: 'create_time',
       render: (val) => (val ? new Date(val).toLocaleString() : '--'),
+      sorter: (a, b) => a.create_time - b.create_time,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'update_time',
+      render: (val) => (val ? new Date(val).toLocaleString() : '--'),
+      sorter: (a, b) => a.update_time - b.update_time,
     },
     {
       title: '账户状态',
