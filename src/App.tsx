@@ -40,7 +40,8 @@ const App = () => {
     setAccountInfo(accountInfo)
   }
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
+    await form.validateFields()
     const formData = form.getFieldsValue()
     const _accountInfo: AccountInfo = {
       id: `${new Date().getTime()}`,
