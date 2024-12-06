@@ -51,33 +51,59 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = (props) => {
             {
               validator(_rule, value, callback) {
                 if (!value) {
-                  callback('请输入邮箱地址')
+                  // callback('请输入邮箱地址')
+                  return Promise.reject('请输入邮箱地址')
                 }
                 if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
-                  callback('请输入合法的邮箱地址')
+                  // callback('请输入合法的邮箱地址')
+                  return Promise.reject('请输入合法的邮箱地址')
                 }
+                return Promise.resolve()
               },
             },
           ]}
         >
-          <Input></Input>
-        </FormItem>
-        <FormItem label="密码" name="password" rules={[{ required: true, message: '请输入密码' }]}>
-          <Password />
+          <Input />
         </FormItem>
         <FormItem
-          label="确认密码"
-          name="confirm_password"
+          label="密码"
+          name="password"
           required
           rules={[
             {
               validator(_rule, value, callback) {
                 if (!value) {
-                  callback('请再次输入密码')
+                  // callback('请输入密码')
+                  return Promise.reject('请输入密码')
+                }
+                if (value?.length < 6) {
+                  // callback('密码最少需要6位')
+                  return Promise.reject('密码最少需要6位')
+                }
+                return Promise.resolve()
+              },
+            },
+          ]}
+        >
+          <Password />
+        </FormItem>
+        <FormItem
+          label="确认密码"
+          name="confirm_password"
+          dependencies={['password']}
+          required
+          rules={[
+            {
+              validator(_rule, value, callback) {
+                if (!value) {
+                  // callback('请再次输入密码')
+                  return Promise.reject('请再次输入密码')
                 }
                 if (value !== password) {
-                  callback('密码不一致请确认密码')
+                  // callback('密码不一致请确认密码')
+                  return Promise.reject('密码不一致请确认密码')
                 }
+                return Promise.resolve()
               },
             },
           ]}

@@ -4,6 +4,7 @@ export type AccountInfo = {
   email: string
   password: string
   create_time: number
+  update_time: number
   status: AccountStatus
 }
 
